@@ -1,0 +1,26 @@
+#########DATABASE CONFIGURATIONS#####
+###-------Help Desk---------#########
+#####################################
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/liquer
+jdbc.username=root
+jdbc.password=root
+
+hibernate.DialectClass=org.hibernate.dialect.MySQLDialect
+hibernate.show_sql=true
+hibernate.format_sql=true
+
+##########################
+#####Connection Pool######
+##########################
+acquireIncrement=5
+minPoolSize=5
+maxPoolSize=50
+maxIdleTime=5000
+c3p0.initialPoolSize=5
+idleConnectionTestPeriod=200
+checkoutTimeout=0
+unreturnedConnectionTimeout=600
+maxStatements=100
+maxConnectionAge=3
+maxIdleTimeExcessConnections=1

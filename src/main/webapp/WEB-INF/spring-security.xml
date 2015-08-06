@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+			http://www.springframework.org/schema/security 
+			http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+	
+	<!-- This is where we configure Spring-Security  -->
+	<security:http  access-denied-page="/denied">
+		<security:form-login 
+				login-page="/login" 
+				authentication-failure-url="/login?failed=true" 
+				default-target-url="/dashboard" always-use-default-target="true"/>
+		<security:custom-filter ref="filter" before="FILTER_SECURITY_INTERCEPTOR" />
+		<security:logout invalidate-session="true" logout-success-url="/login"/>
+		 
+	</security:http>
+	
+	<bean id="filter" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+	<property name="authenticationManager" ref="authenticationManager"/>
+	<property name="accessDecisionManager">
+		 <bean class="org.springframework.security.access.vote.AffirmativeBased">
+		 	<property name="decisionVoters" >
+		 	<bean class="org.springframework.security.access.vote.RoleVoter">
+		 		<property name="rolePrefix" value="ROLE_"/>
+		 	</bean>
+		 	</property>
+		 </bean>
+	</property>
+	<property name="securityMetadataSource" ref="dbFilterInvocationSecurityMetadataSource"/>
+	</bean>
+	
+	<!-- Authentication Manger config -->
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider user-service-ref="authenticationService"/>
+	</security:authentication-manager>
+</beans>

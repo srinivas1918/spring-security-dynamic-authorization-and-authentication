@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd    
+	http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+
+
+	<!-- AJAX ANNOTATION MAPPING -->
+	<context:component-scan base-package="com.exp.dynamicroles" />
+	<context:annotation-config />
+	<mvc:annotation-driven />
+	<tx:annotation-driven/>
+
+	<!-- Views location -->
+	
+        		 <!-- Default viewClass: JSTL view (JSP with html output) -->
+			    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			        <!-- Example: a logical view name of 'vets' is mapped to '/WEB-INF/jsp/vets.jsp' -->
+			        <property name="prefix" value="/WEB-INF/jsp/"/>
+			        <property name="suffix" value=".jsp"/>
+			    </bean>
+			
+			 
+	
+	
+	
+	<!-- resources mapping -->
+	<mvc:resources mapping="/assets/**" location="/assets/" />
+	<bean id="propertyPlaceholder"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:properties/Constants.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- AOP -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- Spring-ORM -->
+
+	<bean id="dataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="maxPoolSize" value="${maxPoolSize}"/>
+        <property name="initialPoolSize" value="${c3p0.initialPoolSize}"/>
+        <property name="acquireIncrement"  value="${acquireIncrement}"/>          
+        <property name="minPoolSize" value="${minPoolSize}"/>
+        <property name="maxIdleTime" value="${maxIdleTime}"/>
+        <property name="maxConnectionAge" value="${maxConnectionAge}"/>
+        <property name="maxStatements" value="${maxStatements}" />
+        <property name="maxIdleTimeExcessConnections" value="${maxIdleTimeExcessConnections}"/>
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="packagesToScan" value="com.exp.dynamicroles.model" />
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect"> ${hibernate.DialectClass} </prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="use_sql_comments">true</prop>
+				<prop key="default_batch_fetch_size">10</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+				<!-- <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop> -->
+			</props>
+		</property>
+	</bean>
+
+</beans>
